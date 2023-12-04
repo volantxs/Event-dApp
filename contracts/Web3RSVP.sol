@@ -2,6 +2,22 @@
 pragma solidity ^0.8.9;
 
 contract Web3RSVP{
+
+    event NewEventCreated(
+        bytes32 eventID,
+        address creatorAddress,
+        uint256 eventTimestamp,
+        uint256 maxCapacity,
+        uint256 deposit,
+        string eventDataCID
+    );
+
+    event NewRSVP(bytes32 eventID, address attendeeAddress);
+
+    event ConfirmedAttendee(bytes32 eventID, address attendeeAddress);
+
+    event DepositsPaidOut(bytes32 eventID);
+
     struct CreateEvent {
         bytes32 eventID;
         string eventDataCID;
@@ -49,6 +65,15 @@ contract Web3RSVP{
             false //default
         );
 
+        emit NewEventCreated(
+            eventID,
+            msg.sender,
+            eventTimestamp,
+            maxCapacity,
+            deposit,
+            eventDataCID
+        );
+
     }
 
     
@@ -66,6 +91,9 @@ contract Web3RSVP{
         }
 
         myEvent.confirmedRSVPs.push(payable(msg.sender));
+
+        emit NewRSVP(eventId, msg.sender);
+
 
     }
 
@@ -91,6 +119,8 @@ contract Web3RSVP{
         }
 
         require(sent, "FAILED TO SENT ETH");
+
+        emit ConfirmedAttendee(eventId, attendee);
     }
 
     function confirmAllAttendees(bytes32 eventId) external {
@@ -117,6 +147,7 @@ contract Web3RSVP{
         myEvent.paidOut = false;
     }
     require(sent, "Failed to send Ether");
+    emit DepositsPaidOut(eventId);
 }
 
 
