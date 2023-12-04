@@ -1,16 +1,17 @@
 const hre = require("hardhat");
 
 const main = async () => {
+    const [deployer, address1, address2] = await hre.ethers.getSigners();
+
     const rsvpContractFactory = await hre.ethers.getContractFactory("Web3RSVP");
     const rsvpContract = await rsvpContractFactory.deploy();
     await rsvpContract.deployed();
     console.log("Contract deployed to:", rsvpContract.address);
     
     //test wallet addresses
-    const [deployer, address1, address2] = await hre.ethers.getSigners();
     
     //creating mock data
-    let deposit = hre.ethers.utils.parseEther("1");
+    let deposit = hre.ethers.parseEther("1");
     let maxCapacity = 3;
     let timestamp = 1718926200;
     let eventDataCID =
